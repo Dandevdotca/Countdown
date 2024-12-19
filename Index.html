@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Waitlist</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container {
+            text-align: center;
+            width: 300px;
+        }
+        #waitlist-form input, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        button {
+            cursor: pointer;
+        }
+        #countdown {
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+        #confirmation-message {
+            display: none;
+            transition: color 0.3s;
+        }
+        .dark-mode {
+            background-color: #000000;
+            color: #ffffff;
+        }
+        .dark-mode #waitlist-form input, .dark-mode #waitlist-form button {
+            background-color: #333;
+            color: #fff;
+            border-color: #fff;
+        }
+        .dark-mode #confirmation-message {
+            color: #fff;
+        }
+        #darkModeToggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <button id="darkModeToggle" onclick="toggleDarkMode()">🌙</button>
+    <div class="container">
+        <h1>Mysterious Countdown</h1>
+        <div id="countdown"></div>
+        <form id="waitlist-form">
+            <input type="email" name="email" placeholder="Your Email" required>
+            <input type="text" name="name" placeholder="Your Name" required>
+            <button type="submit">Join the Mystery</button>
+        </form>
+        <button onclick="shareLink()">Share the Secret</button>
+        <div id="confirmation-message">Thanks for joining! We'll contact you soon.</div>
+    </div>
+
+    <script>
+        function countdownTimer() {
+            const countdownDate = new Date("Jan 1, 2025 00:00:00").getTime();
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown').innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+
+            if (distance < 0) {
+                clearInterval(timer);
+                document.getElementById('countdown').innerHTML = "It's here!";
+            }
+        }
+
+        let timer = setInterval(countdownTimer, 1000);
+
+        document.getElementById('waitlist-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            document.getElementById('confirmation-message').style.display = 'block';
+            this.style.display = 'none'; // Hide form after submission
+        });
+
+        function shareLink() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Join the Secret Waitlist',
+                    url: document.location.href
+                }).then(() => {
+                    console.log('Thanks for sharing!');
+                }).catch(console.error);
+            } else {
+                alert('Sharing is not supported on this browser.');
+            }
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const darkModeButton = document.getElementById('darkModeToggle');
+            if (document.body.classList.contains('dark-mode')) {
+                darkModeButton.textContent = '☀️';
+            } else {
+                darkModeButton.textContent = '🌙';
+            }
+        }
+    </script>
+</body>
+</html>
